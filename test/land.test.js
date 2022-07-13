@@ -13,6 +13,7 @@ contract('Land', ([owner1, owner2]) => {
     const COST = web3.utils.toWei('1', 'ether')  
     
     let land, result
+    // let USDC
 
     beforeEach(async () => {
         land = await Land.new(NAME, SYMBOL, COST)
@@ -46,6 +47,9 @@ contract('Land', ([owner1, owner2]) => {
     })
 
     describe('Minting', () => {
+        // This is where I describe the USDC transfer?
+        // it deducts the user's USDC balance
+        // it passes through the contract
         describe('Success', () => {
             beforeEach(async () => {
                 result = await land.mint(1, {from: owner1, value: COST})
@@ -60,6 +64,8 @@ contract('Land', ([owner1, owner2]) => {
                     result = await land.getBuilding(1)
                     result.owner.should.equal(owner1)
             })
+
+            // it make sure the user's USDC balance was deducted and passed to the contract
         })
 
         describe('Failure', () => {

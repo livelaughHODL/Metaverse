@@ -2,11 +2,13 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract Land is ERC721 {
     uint256 public cost = 1 ether;
     uint256 public maxSupply = 5;
     uint256 public totalSupply = 0;
+    address public USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
 
     struct Building {
         string name;
@@ -43,11 +45,14 @@ contract Land is ERC721 {
         );
     }
 
-    function mint(uint256 _id) public payable {
+    function mint(uint256 _id, uint256 _amount) public {
         uint256 supply = totalSupply;
         require(supply <= maxSupply);
         require(buildings[_id - 1].owner == address(0x0));
-        require(msg.value >= cost);
+        require(_amount >= cost);
+
+        // Call the USDC transferFrom function:
+        require(IERC20(USDC).transferFrom(msg.sender, address(this), _amount));
 
         // NOTE: tokenID always starts from 1, but our arrray starts from 0
         buildings[_id - 1].owner = msg.sender;

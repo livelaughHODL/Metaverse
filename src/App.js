@@ -7,6 +7,7 @@ import { Sky, MapControls } from '@react-three/drei';
 import { Physics } from '@react-three/cannon';
 
 import Land from './abis/Land.json';
+// import IERC20 from './abis/IER20.json';
 
 // Import Components
 import Navbar from './components/Navbar';
@@ -25,6 +26,7 @@ function App() {
 	const [landName, setLandName] = useState(null)
 	const [landOwner, setLandOwner] = useState(null)
 	const [hasOwner, setHasOwner] = useState(false)
+  // const USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 
   const loadBlockchainData = async () => {
     if (typeof window.ethereum !== 'undefined') {
