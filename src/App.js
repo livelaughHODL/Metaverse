@@ -45,7 +45,7 @@ function App() {
       setLandContract(land)
 
       const cost = await land.methods.cost().call()
-      setCost(web3.utils.fromWei(cost.toString(), 'ether'))
+      setCost(web3.utils.fromWei(cost.toString(), 'mwei'))
 
       const buildings = await land.methods.getBuildings().call()
       setBuildings(buildings)
@@ -154,7 +154,7 @@ function App() {
             {!hasOwner && (
               <div className='info--owner'>
                 <h2>Cost</h2>
-                <p>{`${cost} ETH`}</p>
+                <p>{`${cost} USDC`}</p>
               </div>
             )}
           </div>

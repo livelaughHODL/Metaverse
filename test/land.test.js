@@ -10,7 +10,7 @@ contract('Land', ([owner1, owner2]) => {
 
     const NAME = "DApp U Buildings"
     const SYMBOL = "DUB"
-    const COST = web3.utils.toWei('1', 'ether')  
+    const COST = web3.utils.toWei('1', 'mwei')  
     
     let land, result
     // let USDC
