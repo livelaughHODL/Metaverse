@@ -1,4 +1,5 @@
 const Land = artifacts.require("./Land")
+const IERC20 = artifacts.require("./IERC20")
 
 require('chai')
     .use(require('chai-as-promised'))
@@ -11,12 +12,12 @@ contract('Land', ([owner1, owner2]) => {
     const NAME = "DApp U Buildings"
     const SYMBOL = "DUB"
     const COST = web3.utils.toWei('1', 'mwei')  
-    
-    let land, result
-    // let USDC
+    const USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+    let land, usdc, result
 
     beforeEach(async () => {
         land = await Land.new(NAME, SYMBOL, COST)
+        usdc = await IERC20.at(USDC)
     })
 
     describe('Deployment', () => {
@@ -47,13 +48,14 @@ contract('Land', ([owner1, owner2]) => {
     })
 
     describe('Minting', () => {
-        // This is where I describe the USDC transfer?
-        // it deducts the user's USDC balance
-        // it passes through the contract
+        
         describe('Success', () => {
             beforeEach(async () => {
                 result = await land.mint(1, {from: owner1, value: COST})
             })
+
+            // This is where I describe the USDC transfer?
+            // it deducts the user's USDC balance
 
             it('Updates the owner address', async () => {
                 result = await land.ownerOf(1)
@@ -64,8 +66,6 @@ contract('Land', ([owner1, owner2]) => {
                     result = await land.getBuilding(1)
                     result.owner.should.equal(owner1)
             })
-
-            // it make sure the user's USDC balance was deducted and passed to the contract
         })
 
         describe('Failure', () => {
