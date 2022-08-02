@@ -13,6 +13,7 @@ contract('Land', ([owner1, owner2]) => {
     const SYMBOL = "DUB"
     const COST = web3.utils.toWei('1', 'mwei')  
     const USDC = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+    const UNLOCKED_ACCOUNT = '0x72a53cdbbcc1b9efa39c834a540550e23463aacb' // USDC Unlocked Account
     let land, usdc, result
 
     beforeEach(async () => {
@@ -51,11 +52,14 @@ contract('Land', ([owner1, owner2]) => {
         
         describe('Success', () => {
             beforeEach(async () => {
-                result = await land.mint(1, {from: owner1, value: COST})
+                // This is where I describe the USDC transfer?
+                await usdc.transfer(owner1, COST, { from: UNLOCKED_ACCOUNT })
+                // UNLOCKED_ACCOUNT transfers usdc of the COST to owner1
+                await usdc.approve(land.address, COST, { from: owner1 })
+                // owner1 approves contract to take usdc
+                result = await land.mint(1, COST, { from: owner1 })
+                // owner1 mints land ID 1
             })
-
-            // This is where I describe the USDC transfer?
-            // it deducts the user's USDC balance
 
             it('Updates the owner address', async () => {
                 result = await land.ownerOf(1)
@@ -78,8 +82,8 @@ contract('Land', ([owner1, owner2]) => {
             })
 
             it('Prevents minting if already owned', async () => {
-                await land.mint(1, { from: owner1, value: COST })
-                await land.mint(1, { from: owner2, value: COST }).should.be.rejected
+                await land.mint(1, COST { from: owner1 })
+                await land.mint(1, COST { from: owner2 }).should.be.rejected
             })
         })
     })
@@ -87,7 +91,7 @@ contract('Land', ([owner1, owner2]) => {
     describe('Transfers', () => {
         describe('success', () => {
             beforeEach( async () => {
-                await land.mint(1, { from: owner1, value: COST })
+                await land.mint(1, COST { from: owner1 })
                 await land.approve(owner2, 1, { from: owner1 })
                 await land.transferFrom(owner1, owner2, 1, { from: owner2 })
             })
@@ -109,7 +113,7 @@ contract('Land', ([owner1, owner2]) => {
             })
 
             it('Prevents transfers without approval', async () => {
-                await land.mint(1, { from: owner1, value: COST })
+                await land.mint(1, COST { from: owner1 })
                 await land.transferFrom(owner1, owner2, 1, { from: owner2 }).should.be.rejected
             })
         })
