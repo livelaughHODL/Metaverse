@@ -74,16 +74,16 @@ contract('Land', ([owner1, owner2]) => {
 
         describe('Failure', () => {
             it('Prevents mint with 0 value', async () => {
-                await land.mint(1, { from: owner1, value: 0 }).should.be.rejected
+                await land.mint(1, 0, { from: owner1 }).should.be.rejected
             })
 
             it('Prevents mint with invalid ID', async () => {
-                await land.mint(100, { from: owner1, value: 1 }).should.be.rejected
+                await land.mint(100, 1, { from: owner1 }).should.be.rejected
             })
 
             it('Prevents minting if already owned', async () => {
-                await land.mint(1, COST { from: owner1 })
-                await land.mint(1, COST { from: owner2 }).should.be.rejected
+                await land.mint(1, COST, { from: owner1 })
+                await land.mint(1, COST, { from: owner2 }).should.be.rejected
             })
         })
     })
@@ -91,7 +91,7 @@ contract('Land', ([owner1, owner2]) => {
     describe('Transfers', () => {
         describe('success', () => {
             beforeEach( async () => {
-                await land.mint(1, COST { from: owner1 })
+                await land.mint(1, COST, { from: owner1 })
                 await land.approve(owner2, 1, { from: owner1 })
                 await land.transferFrom(owner1, owner2, 1, { from: owner2 })
             })
@@ -113,7 +113,7 @@ contract('Land', ([owner1, owner2]) => {
             })
 
             it('Prevents transfers without approval', async () => {
-                await land.mint(1, COST { from: owner1 })
+                await land.mint(1, COST, { from: owner1 })
                 await land.transferFrom(owner1, owner2, 1, { from: owner2 }).should.be.rejected
             })
         })
