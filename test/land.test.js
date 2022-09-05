@@ -61,6 +61,16 @@ contract('Land', ([owner1, owner2]) => {
                 // owner1 mints land ID 1
             })
 
+            it('Updates the owner balance of USDC', async () => {
+                result = await usdc.balanceOf(owner1)
+                result.toString().should.equal('0')
+            })
+
+            it('Updates the contract balance of USDC', async () => {
+                result = await usdc.balanceOf(land.address)
+                result.toString().should.equal(COST)
+            })
+
             it('Updates the owner address', async () => {
                 result = await land.ownerOf(1)
                 result.should.equal(owner1)
@@ -73,15 +83,24 @@ contract('Land', ([owner1, owner2]) => {
         })
 
         describe('Failure', () => {
-            it('Prevents mint with 0 value', async () => {
+            it('Prevents mint with 0 usdc', async () => {
                 await land.mint(1, 0, { from: owner1 }).should.be.rejected
             })
 
+            it('Prevents minting without approval', async () => {
+                await land.mint(land.address, COST, { from: owner1 }).should.be.rejected
+            })
+
             it('Prevents mint with invalid ID', async () => {
-                await land.mint(100, 1, { from: owner1 }).should.be.rejected
+                // Need to transfer and approve before minting, and replace 1 with COST because we want to simulate a successful approval, and pass in the correct COST, but only an incorrect ID so it errors out exactly how we want it to.
+                await usdc.transfer(owner1, COST, { from: UNLOCKED_ACCOUNT })
+                await usdc.approve(land.address, COST, { from: owner1 })
+                await land.mint(100, COST, { from: owner1 }).should.be.rejected
             })
 
             it('Prevents minting if already owned', async () => {
+                await usdc.transfer(owner1, COST, { from: UNLOCKED_ACCOUNT })
+                await usdc.approve(land.address, COST, { from: owner1 })
                 await land.mint(1, COST, { from: owner1 })
                 await land.mint(1, COST, { from: owner2 }).should.be.rejected
             })
@@ -91,6 +110,8 @@ contract('Land', ([owner1, owner2]) => {
     describe('Transfers', () => {
         describe('success', () => {
             beforeEach( async () => {
+                await usdc.transfer(owner1, COST, { from: UNLOCKED_ACCOUNT })
+                await usdc.approve(land.address, COST, { from: owner1 })
                 await land.mint(1, COST, { from: owner1 })
                 await land.approve(owner2, 1, { from: owner1 })
                 await land.transferFrom(owner1, owner2, 1, { from: owner2 })
@@ -113,6 +134,8 @@ contract('Land', ([owner1, owner2]) => {
             })
 
             it('Prevents transfers without approval', async () => {
+                await usdc.transfer(owner1, COST, { from: UNLOCKED_ACCOUNT })
+                await usdc.approve(land.address, COST, { from: owner1 })
                 await land.mint(1, COST, { from: owner1 })
                 await land.transferFrom(owner1, owner2, 1, { from: owner2 }).should.be.rejected
             })

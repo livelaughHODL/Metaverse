@@ -26,6 +26,7 @@ function App() {
 	const [landName, setLandName] = useState(null)
 	const [landOwner, setLandOwner] = useState(null)
 	const [hasOwner, setHasOwner] = useState(false)
+  // const [usdcContract, setUsdcContract] = useState(null)
   // const USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 
   const loadBlockchainData = async () => {
@@ -41,8 +42,12 @@ function App() {
 
       const networkId = await web3.eth.net.getId()
 
+      // We create a local variable called land inside of loadBlockchainData, and to set a proper reference to the smart contract so it's available in our components we follow up with setLandContract(land)
       const land = new web3.eth.Contract(Land.abi, Land.networks[networkId].address)
       setLandContract(land)
+
+      // const usdc = new web3.eth.Contract(IERC20.abi, USDC)
+      // setUsdcContract(usdc)
 
       const cost = await land.methods.cost().call()
       setCost(web3.utils.fromWei(cost.toString(), 'mwei'))
@@ -74,9 +79,12 @@ function App() {
   }, [account])
 
   const buyHandler = async (_id) => {
+    console.log(landContract)
 		try {
-			await landContract.methods.mint(_id).send({ from: account, value: '1000000000000000000' })
+      // Call the approve function when buyer attempts to mint
+      // await usdcContract.methods.approve(land, '1000000000000000000').send({ from: account })
 
+      await landContract.methods.mint(_id, '1000000000000000000').send({ from: account })
 			const buildings = await landContract.methods.getBuildings().call()
 			setBuildings(buildings)
 
