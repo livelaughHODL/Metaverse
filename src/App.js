@@ -79,10 +79,10 @@ function App() {
   }, [account])
 
   const buyHandler = async (_id) => {
-    console.log(landContract)
+    console.log(landContract._address)
 		try {
       // Call the approve function when buyer attempts to mint
-      // await usdcContract.methods.approve(land, '1000000000000000000').send({ from: account })
+      // await usdcContract.methods.approve(landContract._address, '1000000000000000000').send({ from: account })
 
       await landContract.methods.mint(_id, '1000000000000000000').send({ from: account })
 			const buildings = await landContract.methods.getBuildings().call()
