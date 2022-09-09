@@ -7,7 +7,7 @@ import { Sky, MapControls } from '@react-three/drei';
 import { Physics } from '@react-three/cannon';
 
 import Land from './abis/Land.json';
-import IERC20 from './abis/IER20.json';
+import IERC20 from './abis/IERC20.json';
 
 // Import Components
 import Navbar from './components/Navbar';
@@ -79,7 +79,7 @@ function App() {
   }, [account])
 
   const buyHandler = async (_id) => {
-    console.log(landContract._address)
+    console.log("address", landContract._address)
 		try {
       // Call the approve function when buyer attempts to mint
       await usdcContract.methods.approve(landContract._address, '1000000000000000000').send({ from: account })
