@@ -7,7 +7,7 @@ import { Sky, MapControls } from '@react-three/drei';
 import { Physics } from '@react-three/cannon';
 
 import Land from './abis/Land.json';
-// import IERC20 from './abis/IER20.json';
+import IERC20 from './abis/IER20.json';
 
 // Import Components
 import Navbar from './components/Navbar';
@@ -26,8 +26,8 @@ function App() {
 	const [landName, setLandName] = useState(null)
 	const [landOwner, setLandOwner] = useState(null)
 	const [hasOwner, setHasOwner] = useState(false)
-  // const [usdcContract, setUsdcContract] = useState(null)
-  // const USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+  const [usdcContract, setUsdcContract] = useState(null)
+  const USDC = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 
   const loadBlockchainData = async () => {
     if (typeof window.ethereum !== 'undefined') {
@@ -46,8 +46,8 @@ function App() {
       const land = new web3.eth.Contract(Land.abi, Land.networks[networkId].address)
       setLandContract(land)
 
-      // const usdc = new web3.eth.Contract(IERC20.abi, USDC)
-      // setUsdcContract(usdc)
+      const usdc = new web3.eth.Contract(IERC20.abi, USDC)
+      setUsdcContract(usdc)
 
       const cost = await land.methods.cost().call()
       setCost(web3.utils.fromWei(cost.toString(), 'mwei'))
@@ -82,7 +82,7 @@ function App() {
     console.log(landContract._address)
 		try {
       // Call the approve function when buyer attempts to mint
-      // await usdcContract.methods.approve(landContract._address, '1000000000000000000').send({ from: account })
+      await usdcContract.methods.approve(landContract._address, '1000000000000000000').send({ from: account })
 
       await landContract.methods.mint(_id, '1000000000000000000').send({ from: account })
 			const buildings = await landContract.methods.getBuildings().call()
