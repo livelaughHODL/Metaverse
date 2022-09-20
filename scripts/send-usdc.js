@@ -23,7 +23,9 @@ const ether = (n) => {
   
   // Declare and define, got rid of land, result, and owner2
   let usdc, receiver
-  receiver = web3.eth.getAccounts();
+
+  // deleted this line because it is already defined on line 37:
+  // receiver = web3.eth.getAccounts();
 
 module.exports = async function(callback) {
     // TODO: implement your actions
