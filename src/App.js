@@ -82,9 +82,9 @@ function App() {
     console.log("address", landContract._address)
 		try {
       // Call the approve function when buyer attempts to mint
-      await usdcContract.methods.approve(landContract._address, '100000000').send({ from: account })
+      await usdcContract.methods.approve(landContract._address, '1000000').send({ from: account })
 
-      await landContract.methods.mint(_id, '100000000').send({ from: account })
+      await landContract.methods.mint(_id, '1000000').send({ from: account })
 			const buildings = await landContract.methods.getBuildings().call()
 			setBuildings(buildings)
 
